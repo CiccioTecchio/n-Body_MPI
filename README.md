@@ -17,17 +17,17 @@
 ## Problem Statement  
 
  Nel n-body problem, abbiamo bisogno di trovare le posizioni e le velocità di una collezione di particelle che interagistrono fra loro per un determinato periodo di tempo.
- Per esempio, un astrofisico è interessato a conoscere la posizione e alla velocità di una collezione di stelle. Un n-body solver è un programma che cerca la soluzione a un n-body problem simulando il movimento delle particelle. All'n-body solver vengono dati in input il numero di particelle, in maniera casuale verranno assegnate le posizioni nelle spazio e le relative velocità e il numero di iteazioni che deve simulare. L'output sarà la posizione e la velocità di ogni particella alla fine di un determinato numero di iterazioni specificato dall'utente.
+ Per esempio, un astrofisico è interessato a conoscere la posizione e la velocità di una collezione di stelle. Un n-body solver è un programma che cerca la soluzione a un n-body problem simulando il movimento delle particelle. 
 
 ## Soluzione proposta
-
+All'n-body solver vengono dati in input il numero di particelle, in maniera casuale verranno assegnate le posizioni nelle spazio e le relative velocità e il numero di iteazioni che deve simulare. L'output sarà la posizione e la velocità di ogni particella alla fine di un determinato numero di iterazioni specificato dall'utente.
 La soluzione proposta considera solo l'approccio n^2 rispetto al numero di particelle e al numero di iterazioni dato dall'utente.
-La comunicazione è avvenuta usando sia la comunicazione collettiva con la funzione **MPI_Scatter** che la comunicazione Point to Point con le funzioni **send** e **recv**
+La comunicazione è avvenuta usando sia la comunicazione collettiva con la funzione **MPI_Scatter** sia utilizzandola comunicazione Point to Point con le funzioni **MPI_Send** e **MPI_Recv**
 I test sono stati effettuati sulle istanze di AWS **m4.large**. 
 
 ### Implementazione
 
-L'obiettivo del lavoro svolto è stato quello di parallelizzare l'algoritmo dell' n-body simulationio, partizionando equamente il lavoro tra i processi coinvolti.
+L'obiettivo del lavoro svolto è stato quello di parallelizzare l'algoritmo dell' n-body simulation, partizionando equamente il lavoro tra i processi coinvolti all'interno del cluster.
 L'approccio utilizzato al fine di ottenere una distribuzione quanto più equa possibile è quello riportato di seguito.
 #### Descrizione variabili
 **Body:** struttura utilizzata per rappresentare una singola particella
@@ -51,9 +51,6 @@ MPI_Datatype BodyMPI; //dichiariamo il tipo di dato BodyMPI
 ```c
 int particelle; //numero di particelle da creare
 int numIter //numero di iterazioni da eseguire
-```
-```c
-const double dt=0.1f; //tempo dell'iterazione
 ```
 #### checkArgs
 Controlla se gli argomenti passati da riga di comando sono corretti.
@@ -92,8 +89,9 @@ Tutti i processori inizializzano il loro *bodies*
 calcola gli spostamenti sulla porzione di bodies inviata da un processore.
  - bodyPart: rappresenta la porzione di bodies che un singolo processore deve computare;
  - lenght: quanto è grande bodyPart;
- - start: da quale indice di bodies deve iniziare a computare.
-
+ - start: da quale indice di bodies deve iniziare a computare.  
+ 
+Per ogni particella della porzione di bodies, rappresentata da bodyPart, inviata per numIter volte viene calcolato il suo spostamento e viene aggiornata la sua posizione.
 ```c
   void bodyForce(Body *bodyPart, int lenght, int start) {
     for (int i = start; i < start + lenght; i++) { 
@@ -234,16 +232,16 @@ Durante la fase di testing si è tenuto conto sia di strong scaling che di weak 
 
 Risorse massime utilizzate:
 
-* 8 Istanze EC2 m2.xlarge **StarCluster-Ubuntu-12.04-x86_64-hvm** - _ami-52a0c53b_
+* 8 Istanze EC2 m4.large **StarCluster-Ubuntu-12.04-x86_64-hvm** - _ami-52a0c53b_
 * 16 processori (2 core per Istanza).
 ## Strong Scaling
 
 Nella fase di testing che ha tenuto in considerazione lo strong scaling sono state utilizzate 50.000 particelle e 20 iterazioni.
 Nello strong scaling infatti il numero di particelle resta invariato, quello che cambia è il numero di processori.
 Nella figura in basso è possibile osservare i risultati di questa fase di testing.
-
-![enter image description here](https://lh3.googleusercontent.com/WseuRAGXmcsSMqR1uOoBBgafdf054H4gFtPFai010UmNO7RQlHMR_JrhdY2aeBzAFaWHWFC7mAs "Strong test")
-
+<div style="text-aling:center">
+ <img src="https://github.com/CiccioTecchio/n-Body_MPI/blob/master/img/strong.png"/>
+ </div>
 
 ## Weak Scaling
 
@@ -252,5 +250,6 @@ Inizialmente sono state utilizzate 3000 particelle e 20 iterazione per processo.
 In seguito 10000 particelle e 20 iterazioni per processo.
 Nel weak scaling infatti il numero di particelle cresce in maniera proporzionale al numero di processori.
 Nella figura in basso è possibile osservare i risultati di questa fase di testing.
-
-![](https://lh3.googleusercontent.com/ypY7MTn4XMy9GyO5pMpu23WS_S89A6PiDUu27z-nRKp6kYZbLkC7aDTGmraprkRlmzD35hhNvQY "Weak")
+<div style="text-aling:center">
+ <img src="https://github.com/CiccioTecchio/n-Body_MPI/blob/master/img/weak.png"/>
+ </div>
