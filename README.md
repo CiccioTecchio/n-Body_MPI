@@ -263,10 +263,32 @@ Nella figura in basso è possibile osservare i risultati di questa fase di testi
  
 ## Come compilare il sorgente
 Il sorgente va compilato con l'istruzione seguente
-```c
+```bash
 mpicc main.c -lm -o main
 ```
+
+Nel caso in cui vengano mostrati i seguenti errori
+```bash
+main.c: In function ‘main’:
+main.c:75:9: error: ‘for’ loop initial declarations are only allowed in C99 mode
+main.c:75:9: note: use option -std=c99 or -std=gnu99 to compile your code
+main.c: In function ‘initBodies’:
+main.c:141:5: error: ‘for’ loop initial declarations are only allowed in C99 mode
+main.c: In function ‘bodyForce’:
+main.c:156:5: error: ‘for’ loop initial declarations are only allowed in C99 mode
+main.c:160:1: error: ‘for’ loop initial declarations are only allowed in C99 mode
+main.c:161:7: error: ‘for’ loop initial declarations are only allowed in C99 mode
+main.c:179:5: error: ‘for’ loop initial declarations are only allowed in C99 mode
+main.c: In function ‘printBodies’:
+main.c:192:9: error: ‘for’ loop initial declarations are only allowed in C99 mode
+
+```
+Allora bisogna compilare con il comando
+```bash
+mpicc main.c -lm -std=c99  -o main
+```
+
 ## Come lanciare il main
-```c
+```bash
 mpirun -np <num_processori> main <num_particelle> <num_iterazioini>
 ```
