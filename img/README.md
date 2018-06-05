@@ -1,0 +1,1 @@
+## In questa cartella sono contenute le immagini e il docx relativi allo strong e al weak scaling
