@@ -260,3 +260,13 @@ Nella figura in basso è possibile osservare i risultati di questa fase di testi
 <div style="text-aling:center">
  <img src="https://github.com/CiccioTecchio/n-Body_MPI/blob/master/img/weak.png"/>
  </div>
+ 
+## Come compilare il sorgente
+Il sorgente va compilato con l'istruzione seguente
+```c
+mpicc main.c -lm -o main
+```
+## Come lanciare il main
+```c
+mpirun -np <num_processori> main <num_particelle> <num_iterazioini>
+```
