@@ -234,6 +234,13 @@ Risorse massime utilizzate:
 
 * 8 Istanze EC2 m4.large **StarCluster-Ubuntu-12.04-x86_64-hvm** - _ami-52a0c53b_
 * 16 processori (2 core per Istanza).
+
+I test sono stati effettuati con i seguenti parametri:
+- Numero di iterazioni pari a 20 
+- Istante di tempo pari a 0.1 
+```c
+const double dt=0.1f;
+```
 ## Strong Scaling
 
 Nella fase di testing che ha tenuto in considerazione lo strong scaling sono state utilizzate 50.000 particelle e 20 iterazioni.
