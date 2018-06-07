@@ -241,6 +241,8 @@ I test sono stati effettuati con i seguenti parametri:
 ```c
 const double dt=0.1f;
 ```
+I tempi presenti nelle immagini dello strong e del weak scaling sono riportati in **secondi**.
+
 ## Strong Scaling
 
 Nella fase di testing che ha tenuto in considerazione lo strong scaling sono state utilizzate 50.000 particelle e 20 iterazioni.
